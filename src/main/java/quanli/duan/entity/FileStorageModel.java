@@ -1,16 +1,14 @@
 package quanli.duan.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import quanli.duan.repository.FileStorageRepository;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +16,7 @@ import javax.persistence.Id;
 public class FileStorageModel {
 
     @Id
-    @Column
+    @Column(nullable = false)
     private String fileId;
     private String fileDirectory;
     private String rawFileName;
