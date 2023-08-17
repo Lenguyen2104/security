@@ -1,9 +1,6 @@
 package quanli.duan.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import quanli.duan.repository.ShipmentRepository;
 
 import javax.persistence.Column;
@@ -12,7 +9,8 @@ import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +18,7 @@ import java.time.LocalDateTime;
 public class ShipmentModel {
 
     @Id
-    @Column
+    @Column(nullable = false)
     private String shipmentId;
     private String orderId;
     private LocalDateTime shipmentDate;

@@ -1,9 +1,6 @@
 package quanli.duan.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import quanli.duan.repository.ProductsRepository;
 
 import javax.persistence.Column;
@@ -11,7 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +17,7 @@ import java.math.BigDecimal;
 public class ProductsModel {
 
     @Id
-    @Column
+    @Column(nullable = false)
     private String productId;
     private String productName;
     private BigDecimal unitPrice;

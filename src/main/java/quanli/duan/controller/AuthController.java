@@ -1,5 +1,6 @@
 package quanli.duan.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,16 +12,11 @@ import quanli.duan.dto.request.RegisterRequest;
 import quanli.duan.service.AuthService;
 
 @RestController
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private AuthService authService;
-
-    @Autowired
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
+    final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody RegisterRequest registerRequest) {

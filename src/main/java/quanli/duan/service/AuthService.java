@@ -1,53 +1,49 @@
 package quanli.duan.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import quanli.duan.core.response.ResponseBody;
+import quanli.duan.configuration.JWTGenerator;
+import quanli.duan.core.AuthResponse;
+import quanli.duan.core.ResponseBody;
 import quanli.duan.dto.request.LoginRequest;
 import quanli.duan.dto.request.RegisterRequest;
 import quanli.duan.entity.UserModel;
+import quanli.duan.entity.UserRoleModel;
+import quanli.duan.repository.RoleRepository;
 import quanli.duan.repository.UserRepository;
 import quanli.duan.repository.UserRoleRepository;
 
-import static quanli.duan.core.response.ResponseStatus.SUCCESS;
+import static quanli.duan.core.ResponseStatus.SUCCESS;
 
 @Slf4j
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class AuthService {
-    private UserRepository userRepository;
-    private UserRoleRepository userRoleRepository;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    public AuthService(UserRepository userRepository, UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.userRoleRepository = userRoleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-    }
-
-//    @Autowired
-//    public void AuthController(AuthenticationManager authenticationManager) {
-//        this.authenticationManager = authenticationManager;
-//    }
+    final UserRepository userRepository;
+    final UserRoleRepository userRoleRepository;
+    final RoleRepository roleRepository;
+    final PasswordEncoder passwordEncoder;
+    final AuthenticationManager authenticationManager;
+    final JWTGenerator jwtGenerator;
 
     public ResponseBody<Object> register(RegisterRequest registerRequest) {
         var response = new ResponseBody<>();
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             response.setOperationSuccess(SUCCESS, "fail");
         }
-        var userRoleModel = userRoleRepository.findByUserNameRole(registerRequest.getUserNameRole());
-        UserModel userModel = UserModel.of(registerRequest, passwordEncoder, userRoleModel.getUserRoleId());
+
+        UserModel userModel = UserModel.of(registerRequest, passwordEncoder);
         userRepository.save(userModel);
+//        var roleModel = roleRepository.findByRoleName(registerRequest.getUserNameRole());
+        UserRoleModel userRoleModel = UserRoleModel.of(userModel.getUserId(), registerRequest.getUserNameRole());
+        userRoleRepository.save(userRoleModel);
+        
         response.setOperationSuccess(SUCCESS, "success");
         return response;
     }
@@ -57,9 +53,9 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
                         loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        String token = jwtGenerator.generateToken(authentication);
         var response = new ResponseBody<>();
-        response.setOperationSuccess(SUCCESS, "success");
+        response.setOperationSuccess(SUCCESS, new AuthResponse(token));
         return response;
     }
 }
