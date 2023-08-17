@@ -3,12 +3,12 @@ package quanli.duan.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import quanli.duan.core.response.ResponseBody;
+import quanli.duan.core.ResponseBody;
 import quanli.duan.dto.request.UserRequest;
 import quanli.duan.entity.UserModel;
 import quanli.duan.repository.UserRepository;
 
-import static quanli.duan.core.response.ResponseStatus.SUCCESS;
+import static quanli.duan.core.ResponseStatus.SUCCESS;
 
 @Slf4j
 @Service
